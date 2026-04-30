@@ -1,2 +1,185 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard Anamnesis</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:20px}.container{max-width:1200px;margin:0 auto}.header{background:white;padding:30px;border-radius:12px;margin-bottom:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1)}.header h1{color:#333}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-top:20px}.stat-card{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;border-radius:8px;text-align:center}.stat-number{font-size:28px;font-weight:bold}.table-wrapper{background:white;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden}table{width:100%;border-collapse:collapse}th,td{padding:12px 20px;text-align:left;border-bottom:1px solid #eee}th{background:#f8f9fa;font-weight:600}tbody tr:hover{background:#f8f9fa}.loading{text-align:center;padding:40px;color:#666}.error{background:#f8d7da;color:#721c24;padding:20px;border-radius:8px;margin-bottom:20px}.btn{background:#667eea;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-bottom:20px}</style></head><body><div class="container"><div class="header"><h1>📋 Dashboard Anamnesis</h1><p>Camila Lagos - Datos en tiempo real</p><button class="btn" onclick="cargarDatos()">🔄 Actualizar</button><div class="stats"><div class="stat-card"><div class="stat-number" id="totalPacientes">0</div><div>Total Pacientes</div></div><div class="stat-card"><div class="stat-number" id="promEdad">0</div><div>Edad Promedio</div></div><div class="stat-card"><div class="stat-number" id="promPeso">0</div><div>Peso Promedio</div></div><div class="stat-card"><div class="stat-number" id="promEstres">0</div><div>Estrés Promedio</div></div></div></div><div class="table-wrapper"><div style="padding:20px"><h2>Listado de Pacientes</h2></div><div id="errorContainer"></div><div id="loadingContainer" class="loading">Cargando datos...</div><table id="dataTable" style="display:none"><thead><tr><th>Fecha</th><th>Paciente</th><th>Email</th><th>Edad</th><th>Peso</th><th>Estrés</th></tr></thead><tbody id="dataBody"></tbody></table></div></div><script>async function cargarDatos(){try{document.getElementById('loadingContainer').style.display='block';document.getElementById('errorContainer').innerHTML='';const r=await fetch('https://dnlvzwrujosuckdzmffx.supabase.co/functions/v1/get-anamnesis-data');const d=await r.json();if(!Array.isArray(d))throw new Error('Error');const tb=document.getElementById('dataBody');tb.innerHTML='';d.forEach(x=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+new Date(x.created_at).toLocaleDateString('es-CL')+'</td><td>'+x.nombre_completo+'</td><td>'+x.email_paciente+'</td><td>'+(x.edad||'-')+'</td><td>'+(x.peso_kg||'-')+'</td><td>'+(x.nivel_estres||'-')+'/5</td>';tb.appendChild(tr)});document.getElementById('dataTable').style.display='table';document.getElementById('totalPacientes').textContent=d.length;const edades=d.map(x=>x.edad).filter(x=>x);const pesos=d.map(x=>x.peso_kg).filter(x=>x);const estres=d.map(x=>x.nivel_estres).filter(x=>x);document.getElementById('promEdad').textContent=edades.length?(edades.reduce((a,b)=>a+b)/edades.length).toFixed(0):0;document.getElementById('promPeso').textContent=pesos.length?(pesos.reduce((a,b)=>a+b)/pesos.length).toFixed(1):0;document.getElementById('promEstres').textContent=estres.length?(estres.reduce((a,b)=>a+b)/estres.length).toFixed(1):0}catch(e){document.getElementById('errorContainer').innerHTML='<div class="error">Error: '+e.message+'</div>'}finally{document.getElementById('loadingContainer').style.display='none'}}cargarDatos()</script></body></html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Anamnesis - Camila Lagos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header { background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .header h1 { color: #333; margin-bottom: 10px; }
+    .header p { color: #666; font-size: 14px; }
+    .btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 10px 0; }
+    .btn:hover { background: #764ba2; }
+    .table-wrapper { background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+    .table-header { padding: 20px; background: #f8f9fa; border-bottom: 1px solid #eee; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 20px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f8f9fa; font-weight: 600; color: #333; }
+    tbody tr:hover { background: #f8f9fa; }
+    .ver-btn { background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .ver-btn:hover { background: #764ba2; }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+    .modal-content { background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 700px; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .close { float: right; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
+    .close:hover { color: black; }
+    .modal h2 { color: #667eea; margin-bottom: 20px; }
+    .modal-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .modal-section h3 { color: #667eea; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .modal-section p { color: #333; font-size: 14px; line-height: 1.6; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .error { background: #f8d7da; color: #721c24; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 Dashboard de Anamnesis Nutricional</h1>
+      <p>Camila Lagos Madrid - Ver respuestas completas de los pacientes</p>
+      <button class="btn" onclick="cargarDatos()">🔄 Actualizar</button>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-header"><h2>Pacientes Registrados</h2></div>
+      <div id="errorContainer"></div>
+      <div id="loadingContainer" class="loading">Cargando datos...</div>
+      <table id="dataTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Edad</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="dataBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="detalleModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal()">&times;</span>
+      <div id="detalleContent"></div>
+    </div>
+  </div>
+
+  <script>
+    async function cargarDatos() {
+      try {
+        document.getElementById('loadingContainer').style.display = 'block';
+        document.getElementById('errorContainer').innerHTML = '';
+        const r = await fetch('https://dnlvzwrujosuckdzmffx.supabase.co/functions/v1/get-anamnesis-data');
+        const d = await r.json();
+        if (!Array.isArray(d)) throw new Error('Error al cargar datos');
+        const tb = document.getElementById('dataBody');
+        tb.innerHTML = '';
+        d.forEach(x => {
+          const tr = document.createElement('tr');
+          const fecha = new Date(x.created_at).toLocaleDateString('es-CL');
+          tr.innerHTML = '<td>' + fecha + '</td><td>' + x.nombre_completo + '</td><td>' + x.email_paciente + '</td><td>' + (x.edad || '-') + '</td><td><button class="ver-btn" onclick="mostrarDetalle(' + "'" + x.id + "'" + ')">Ver Detalles</button></td>';
+          tb.appendChild(tr);
+        });
+        document.getElementById('dataTable').style.display = 'table';
+      } catch (error) {
+        document.getElementById('errorContainer').innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+      } finally {
+        document.getElementById('loadingContainer').style.display = 'none';
+      }
+    }
+
+    async function mostrarDetalle(id) {
+      try {
+        const r = await fetch('https://dnlvzwrujosuckdzmffx.supabase.co/functions/v1/get-anamnesis-data');
+        const d = await r.json();
+        const paciente = d.find(x => x.id === id);
+        if (!paciente) return;
+        
+        const html = `
+          <h2>${paciente.nombre_completo}</h2>
+          
+          <div class="modal-section">
+            <h3>📧 Contacto</h3>
+            <p><strong>Email:</strong> ${paciente.email_paciente}</p>
+            <p><strong>Ocupación:</strong> ${paciente.ocupacion || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>📏 Datos Personales</h3>
+            <p><strong>Edad:</strong> ${paciente.edad || '-'} años</p>
+            <p><strong>Sexo:</strong> ${paciente.sexo_biologico || '-'}</p>
+            <p><strong>Peso:</strong> ${paciente.peso_kg || '-'} kg</p>
+            <p><strong>Talla:</strong> ${paciente.talla_cm || '-'} cm</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>🎯 Motivo de Consulta</h3>
+            <p><strong>Motivo:</strong> ${paciente.motivo_consulta || '-'}</p>
+            <p><strong>Objetivo Principal:</strong> ${paciente.objetivo_principal || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>🏥 Antecedentes de Salud</h3>
+            <p><strong>Patologías:</strong> ${paciente.patologias ? paciente.patologias.join(', ') : 'Ninguna'}</p>
+            <p><strong>Medicamentos/Suplementos:</strong> ${paciente.medicamentos_suplementos || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>🍽️ Hábitos Alimentarios</h3>
+            <p><strong>Comidas por día:</strong> ${paciente.comidas_dia || '-'}</p>
+            <p><strong>Consumo de agua:</strong> ${paciente.consumo_agua || '-'}</p>
+            <p><strong>Cocina en casa:</strong> ${paciente.cocina_en_casa || '-'}</p>
+            <p><strong>Alimentos que NO consume:</strong> ${paciente.alimentos_no_consume || '-'}</p>
+            <p><strong>Alimentos favoritos:</strong> ${paciente.alimentos_favoritos || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>💪 Actividad Física</h3>
+            <p><strong>Realiza actividad física:</strong> ${paciente.realiza_actividad_fisica || '-'}</p>
+            <p><strong>Tipo de actividad:</strong> ${paciente.tipo_actividad ? paciente.tipo_actividad.join(', ') : '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>😴 Sueño y Estrés</h3>
+            <p><strong>Horas de sueño:</strong> ${paciente.horas_sueno || '-'}</p>
+            <p><strong>Nivel de estrés:</strong> ${paciente.nivel_estres || '-'}/5</p>
+            <p><strong>Ansiedad por comida:</strong> ${paciente.ansiedad_comida || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>📚 Historia Dietética</h3>
+            <p><strong>Dietas previas:</strong> ${paciente.dietas_previas ? paciente.dietas_previas.join(', ') : 'Ninguna'}</p>
+            <p><strong>Experiencia con dietas:</strong> ${paciente.experiencia_dietas || '-'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h3>💬 Comentarios Adicionales</h3>
+            <p>${paciente.comentarios_adicionales || 'Ninguno'}</p>
+          </div>
+        `;
+        
+        document.getElementById('detalleContent').innerHTML = html;
+        document.getElementById('detalleModal').style.display = 'block';
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById('detalleModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('detalleModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>
