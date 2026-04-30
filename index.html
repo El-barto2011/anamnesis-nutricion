@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anamnesis Nutricional - Camila Lagos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 500;
+      color: #1d7a5a;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    
+    .disclaimer {
+      font-size: 13px;
+      color: #999;
+      font-style: italic;
+    }
+    
+    .progress-container {
+      margin-bottom: 2rem;
+    }
+    
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 13px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1d7a5a 0%, #16a34a 100%);
+      width: 12.5%;
+      transition: width 0.3s ease;
+    }
+    
+    .form-container {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    legend {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1d7a5a;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #dcfce7;
+      width: 100%;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+    
+    .required {
+      color: #dc2626;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="time"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="time"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #1d7a5a;
+      box-shadow: 0 0 0 3px rgba(29, 122, 90, 0.1);
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .checkbox-group,
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .checkbox-item,
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    input[type="checkbox"],
+    input[type="radio"] {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .range-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .range-value {
+      font-weight: 500;
+      color: #1d7a5a;
+      min-width: 30px;
+      text-align: right;
+    }
+    
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #999;
+      margin-top: 0.5rem;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    button {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    #prevBtn {
+      background: white;
+      border: 1px solid #d1d5db;
+      color: #1f2937;
+      display: none;
+    }
+    
+    #prevBtn:hover {
+      background: #f9fafb;
+    }
+    
+    #nextBtn,
+    #submitBtn {
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: white;
+    }
+    
+    #nextBtn:hover,
+    #submitBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    }
+    
+    #nextBtn:active,
+    #submitBtn:active {
+      transform: translateY(0);
+    }
+    
+    #submitBtn {
+      display: none;
+    }
+    
+    .loading-message {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      color: #1d7a5a;
+      font-size: 14px;
+    }
+    
+    .success-message {
+      display: none;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .success-icon {
+      font-size: 24px;
+      margin-bottom: 1rem;
+    }
+    
+    .success-message h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1d7a5a;
+      margin-bottom: 0.5rem;
+    }
+    
+    .success-message p {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+    
+    .success-message .secondary {
+      color: #999;
+      font-size: 13px;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    @media (max-width: 640px) {
+      .grid-2,
+      .checkbox-group,
+      .radio-group {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      .form-container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Anamnesis Nutricional</h1>
+      <p class="subtitle">Camila Lagos Madrid, Nutricionista</p>
+      <p class="disclaimer">Tus datos serán usados solo para tu evaluación clínica</p>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-label">
+        <span style="color: #666;">Progreso</span>
+        <span id="progress-text" style="color: #1d7a5a; font-weight: 500;">1 de 8</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="form-container">
+      <form id="anamnesisForm">
+        <fieldset id="section-1" class="visible">
+          <legend>1. Datos Personales</legend>
+          <div class="form-group">
+            <label>Nombre completo <span class="required">*</span></label>
+            <input type="text" name="nombre_completo" required>
+          </div>
+          <div class="form-group grid-2">
+            <div>
+              <label>Edad <span class="required">*</span></label>
+              <input type="number" name="edad" required>
+            </div>
+            <div>
+              <label>Sexo biológico</label>
+              <select name="sexo_biologico">
+                <option value="">Selecciona...</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group grid-2">
+            <div>
+              <label>Peso (kg) <span class="required">*</span></label>
+              <input type="number" step="0.1" name="peso_kg" required>
+            </div>
+            <div>
+              <label>Talla (cm) <span class="required">*</span></label>
+              <input type="number" name="talla_cm" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ocupación</label>
+            <input type="text" name="ocupacion">
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" name="email_paciente" required>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-2" class="hidden">
+          <legend>2. Motivo de Consulta</legend>
+          <div class="form-group">
+            <label>¿Qué te trae a consulta hoy? <span class="required">*</span></label>
+            <textarea name="motivo_consulta" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>¿Cuál es tu objetivo principal?</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Bajar de peso"> Bajar de peso</label>
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Recomposición corporal"> Recomposición corporal</label>
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Ganar masa muscular"> Ganar masa muscular</label>
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Mejorar energía y vitalidad"> Mejorar energía</label>
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Mejorar relación con la comida"> Relación con comida</label>
+              <label class="radio-item"><input type="radio" name="objetivo_principal" value="Control de patología"> Control patología</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-3" class="hidden">
+          <legend>3. Antecedentes de Salud</legend>
+          <div class="form-group">
+            <label>¿Tienes alguna patología diagnosticada?</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Diabetes tipo 2"> Diabetes tipo 2</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Resistencia a la insulina"> Resistencia insulina</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Hipotiroidismo"> Hipotiroidismo</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="SOP"> SOP</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Hipertensión"> Hipertensión</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Colesterol alto"> Colesterol alto</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Anemia o ferropenia"> Anemia/ferropenia</label>
+              <label class="checkbox-item"><input type="checkbox" name="patologias" value="Ansiedad o depresión"> Ansiedad/depresión</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Otras patologías o condiciones</label>
+            <textarea name="otras_patologias"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Medicamentos o suplementos actuales</label>
+            <textarea name="medicamentos_suplementos" placeholder="Nombre, dosis y frecuencia"></textarea>
+          </div>
+          <div class="form-group">
+            <label>¿Tienes exámenes recientes?</label>
+            <textarea name="examenes_recientes" placeholder="Ej: hemograma, perfil lipídico, vitamina D, ferritina"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-4" class="hidden">
+          <legend>4. Hábitos Alimentarios</legend>
+          <div class="form-group">
+            <label>¿Cuántas comidas haces al día?</label>
+            <select name="comidas_dia">
+              <option value="">Selecciona...</option>
+              <option value="1–2">1–2 comidas</option>
+              <option value="3">3 comidas</option>
+              <option value="4">4 comidas</option>
+              <option value="5 o más">5 o más comidas</option>
+              <option value="Sin horario fijo">Sin horario fijo</option>
+            </select>
+          </div>
+          <div class="form-group grid-2">
+            <div>
+              <label>Primera comida</label>
+              <input type="time" name="hora_primera_comida">
+            </div>
+            <div>
+              <label>Última comida</label>
+              <input type="time" name="hora_ultima_comida">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Alimentos que NO consumes</label>
+            <textarea name="alimentos_no_consume"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Alimentos que te encantan y quieres mantener</label>
+            <textarea name="alimentos_favoritos"></textarea>
+          </div>
+          <div class="form-group">
+            <label>¿Cocinas en casa?</label>
+            <select name="cocina_en_casa">
+              <option value="">Selecciona...</option>
+              <option value="Sí, casi siempre">Sí, casi siempre</option>
+              <option value="A veces">A veces</option>
+              <option value="Rara vez">Rara vez (como afuera o delivery)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>¿Cuánta agua bebes al día?</label>
+            <select name="consumo_agua">
+              <option value="">Selecciona...</option>
+              <option value="Menos de 1L">Menos de 1L</option>
+              <option value="1–1.5L">1–1.5L</option>
+              <option value="2L o más">2L o más</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-5" class="hidden">
+          <legend>5. Actividad Física</legend>
+          <div class="form-group">
+            <label>¿Realizas actividad física?</label>
+            <select name="realiza_actividad_fisica">
+              <option value="">Selecciona...</option>
+              <option value="No actualmente">No actualmente</option>
+              <option value="1–2 veces/semana">1–2 veces/semana</option>
+              <option value="3–4 veces/semana">3–4 veces/semana</option>
+              <option value="5 o más veces/semana">5 o más veces/semana</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>¿Qué tipo de actividad realizas?</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Gym / pesas"> Gym / pesas</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Cardio"> Cardio</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Caminata"> Caminata</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Pilates"> Pilates</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Yoga"> Yoga</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Deporte de equipo"> Deporte equipo</label>
+              <label class="checkbox-item"><input type="checkbox" name="tipo_actividad" value="Natación"> Natación</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-6" class="hidden">
+          <legend>6. Sueño y Estrés</legend>
+          <div class="form-group">
+            <label>¿Cuántas horas duermes habitualmente?</label>
+            <select name="horas_sueno">
+              <option value="">Selecciona...</option>
+              <option value="Menos de 5h">Menos de 5h</option>
+              <option value="5–6h">5–6h</option>
+              <option value="7–8h">7–8h</option>
+              <option value="Más de 8h">Más de 8h</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>¿Cómo calificarías tu nivel de estrés?</label>
+            <div class="range-container">
+              <input type="range" name="nivel_estres" min="1" max="5" value="3" id="stressRange">
+              <span class="range-value" id="stressValue">3</span>
+            </div>
+            <div class="range-labels">
+              <span>Muy bajo</span>
+              <span>Muy alto</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>¿Tienes ansiedad por la comida o antojos frecuentes?</label>
+            <select name="ansiedad_comida">
+              <option value="">Selecciona...</option>
+              <option value="No">No</option>
+              <option value="A veces">A veces</option>
+              <option value="Frecuentemente">Frecuentemente</option>
+              <option value="Casi siempre">Casi siempre</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-7" class="hidden">
+          <legend>7. Historia Alimentaria</legend>
+          <div class="form-group">
+            <label>¿Has seguido alguna dieta antes?</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Keto"> Keto</label>
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Low carb"> Low carb</label>
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Ayuno intermitente"> Ayuno intermitente</label>
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Contar calorías"> Contar calorías</label>
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Hipocalórica estricta"> Hipocalórica</label>
+              <label class="checkbox-item"><input type="checkbox" name="dietas_previas" value="Con nutricionista"> Con nutricionista</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>¿Qué funcionó y qué no en experiencias anteriores?</label>
+            <textarea name="experiencia_dietas"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset id="section-8" class="hidden">
+          <legend>8. Para Terminar</legend>
+          <div class="form-group">
+            <label>¿Hay algo más que quieras contarme antes de la consulta?</label>
+            <textarea name="comentarios_adicionales"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="button-group">
+          <button type="button" id="prevBtn" onclick="changeSection(-1)">Atrás</button>
+          <button type="button" id="nextBtn" onclick="changeSection(1)">Siguiente</button>
+          <button type="submit" id="submitBtn">Enviar Encuesta</button>
+        </div>
+
+        <div class="loading-message" id="loadingMessage">
+          Guardando respuestas...
+        </div>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <h2>¡Encuesta completada!</h2>
+        <p>Hemos recibido tus respuestas. Camila te contactará pronto para agendar tu primera consulta.</p>
+        <p class="secondary">Confirmación enviada a tu correo.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://dnlvzwrujosuckdzmffx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRubHZ6d3J1am9zdWNremRtZmZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk4MjE2MzUsImV4cCI6MTkyNTQwMTYzNX0.J5gBz0w3h_jC3bw0OUXzvPf-m1a0Q-L0A0VZjx4t1Pg';
+
+    let currentSection = 1;
+    const totalSections = 8;
+    const form = document.getElementById('anamnesisForm');
+
+    function updateProgress() {
+      const percentage = (currentSection / totalSections) * 100;
+      document.getElementById('progress-bar').style.width = percentage + '%';
+      document.getElementById('progress-text').textContent = currentSection + ' de ' + totalSections;
+    }
+
+    function changeSection(direction) {
+      if (direction > 0) {
+        const currentFieldset = document.getElementById('section-' + currentSection);
+        const requiredFields = currentFieldset.querySelectorAll('[required]');
+        for (let field of requiredFields) {
+          if (!field.value) {
+            field.style.borderColor = '#dc2626';
+            setTimeout(() => field.style.borderColor = '#d1d5db', 2000);
+            return;
+          }
+        }
+      }
+
+      document.getElementById('section-' + currentSection).classList.add('hidden');
+      currentSection += direction;
+      currentSection = Math.max(1, Math.min(totalSections, currentSection));
+      document.getElementById('section-' + currentSection).classList.remove('hidden');
+
+      document.getElementById('prevBtn').style.display = currentSection > 1 ? 'block' : 'none';
+      document.getElementById('nextBtn').style.display = currentSection < totalSections ? 'block' : 'none';
+      document.getElementById('submitBtn').style.display = currentSection === totalSections ? 'block' : 'none';
+
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('stressRange').addEventListener('input', function() {
+      document.getElementById('stressValue').textContent = this.value;
+    });
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      document.getElementById('loadingMessage').style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
+
+      const formData = new FormData(form);
+      const payload = {
+        nombre_completo: formData.get('nombre_completo'),
+        edad: parseInt(formData.get('edad')),
+        peso_kg: parseFloat(formData.get('peso_kg')),
+        talla_cm: parseInt(formData.get('talla_cm')),
+        sexo_biologico: formData.get('sexo_biologico'),
+        ocupacion: formData.get('ocupacion'),
+        email_paciente: formData.get('email_paciente'),
+        motivo_consulta: formData.get('motivo_consulta'),
+        objetivo_principal: formData.get('objetivo_principal'),
+        patologias: formData.getAll('patologias'),
+        otras_patologias: formData.get('otras_patologias'),
+        medicamentos_suplementos: formData.get('medicamentos_suplementos'),
+        examenes_recientes: formData.get('examenes_recientes'),
+        comidas_dia: formData.get('comidas_dia'),
+        hora_primera_comida: formData.get('hora_primera_comida'),
+        hora_ultima_comida: formData.get('hora_ultima_comida'),
+        alimentos_no_consume: formData.get('alimentos_no_consume'),
+        alimentos_favoritos: formData.get('alimentos_favoritos'),
+        cocina_en_casa: formData.get('cocina_en_casa'),
+        consumo_agua: formData.get('consumo_agua'),
+        realiza_actividad_fisica: formData.get('realiza_actividad_fisica'),
+        tipo_actividad: formData.getAll('tipo_actividad'),
+        horas_sueno: formData.get('horas_sueno'),
+        nivel_estres: parseInt(formData.get('nivel_estres')),
+        ansiedad_comida: formData.get('ansiedad_comida'),
+        dietas_previas: formData.getAll('dietas_previas'),
+        experiencia_dietas: formData.get('experiencia_dietas'),
+        comentarios_adicionales: formData.get('comentarios_adicionales')
+      };
+
+      try {
+        const response = await fetch(
+          SUPABASE_URL + '/functions/v1/submit-anamnesis',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById('anamnesisForm').style.display = 'none';
+          document.getElementById('loadingMessage').style.display = 'none';
+          document.getElementById('successMessage').style.display = 'block';
+        } else {
+          document.getElementById('loadingMessage').textContent = 'Error: ' + result.error;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loadingMessage').textContent = 'Error al enviar. Intenta de nuevo.';
+      }
+    });
+
+    updateProgress();
+  </script>
+</body>
+</html>
